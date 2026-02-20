@@ -65,17 +65,4 @@ Paper sources are cached at `~/.cache/arxiv-papers/knowledge/{arxiv_id}/` so re-
 
 Auto-triggers on: "send to Telegram", "notify me", "share on Telegram".
 
-Sends files to your Telegram chat. Two modes:
-- **Formatted text** (default): converts markdown to Telegram HTML, splits at 4096-char limit
-- **Document** (`--as-document`): sends the raw file as an attachment
-
-## Commands
-
-### /send-telegram
-
-```
-/send-telegram <file_path>              # Send as formatted text
-/send-telegram <file_path> --as-document  # Send as file attachment
-```
-
-If no file is specified, offers to send the most recent file in `research_notes/`.
+Sends files as document attachments to your Telegram chat. Always send the HTML version of reports for best rendering. Uses only Python stdlib — no extra dependencies.
