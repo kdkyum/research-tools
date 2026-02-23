@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""Send a markdown file to Telegram chat.
+"""Send a file to Telegram chat.
 
 Usage:
-    python send_markdown.py <file_path> [--config ~/.telegram_notify.conf] [--as-document]
+    python send_markdown.py <file_path> [--config ~/.telegram_notify.conf] [--no-document]
 
 Reads T_TOKEN and CHAT_ID from the config file.
-By default, sends as formatted text messages (splitting at 4096 char limit).
-With --as-document, sends the file as-is as a document attachment.
+By default, sends as a document attachment.
+With --no-document, converts markdown to Telegram HTML and sends as inline messages.
 """
 import argparse
+import mimetypes
 import os
 import re
 import sys
@@ -203,6 +204,9 @@ def send_document(token, chat_id, file_path):
 
     boundary = "----PythonFormBoundary"
     filename = os.path.basename(file_path)
+    content_type, _ = mimetypes.guess_type(file_path)
+    if not content_type:
+        content_type = "application/octet-stream"
 
     with open(file_path, "rb") as f:
         file_data = f.read()
@@ -213,7 +217,7 @@ def send_document(token, chat_id, file_path):
         f"{chat_id}\r\n"
         f"--{boundary}\r\n"
         f'Content-Disposition: form-data; name="document"; filename="{filename}"\r\n'
-        f"Content-Type: text/markdown\r\n\r\n"
+        f"Content-Type: {content_type}\r\n\r\n"
     ).encode("utf-8") + file_data + f"\r\n--{boundary}--\r\n".encode("utf-8")
 
     req = urllib.request.Request(
@@ -235,12 +239,12 @@ def send_document(token, chat_id, file_path):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Send markdown file to Telegram")
-    parser.add_argument("file", help="Path to the markdown file")
+    parser = argparse.ArgumentParser(description="Send a file to Telegram")
+    parser.add_argument("file", help="Path to the file to send")
     parser.add_argument("--config", default="~/.telegram_notify.conf",
                         help="Path to config file (default: ~/.telegram_notify.conf)")
-    parser.add_argument("--as-document", action="store_true",
-                        help="Send as document attachment instead of formatted text")
+    parser.add_argument("--no-document", action="store_true",
+                        help="Send as formatted inline messages instead of document attachment")
     args = parser.parse_args()
 
     file_path = os.path.expanduser(args.file)
@@ -255,14 +259,7 @@ def main():
         print("Error: T_TOKEN and CHAT_ID must be set in config", file=sys.stderr)
         sys.exit(1)
 
-    if args.as_document:
-        print(f"Sending {file_path} as document...")
-        ok = send_document(token, chat_id, file_path)
-        if ok:
-            print("Document sent.")
-        else:
-            sys.exit(1)
-    else:
+    if args.no_document:
         with open(file_path) as f:
             md_text = f.read()
 
@@ -280,6 +277,13 @@ def main():
                 sys.exit(1)
 
         print("Done.")
+    else:
+        print(f"Sending {file_path} as document...")
+        ok = send_document(token, chat_id, file_path)
+        if ok:
+            print("Document sent.")
+        else:
+            sys.exit(1)
 
 
 if __name__ == "__main__":
