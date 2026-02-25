@@ -38,9 +38,10 @@ To get these:
 ```
 DASHBOARD_URL="https://<your-dashboard-ip>:3000"
 DASHBOARD_API_KEY="<your-api-key>"
+DASHBOARD_USER="<your-cluster-name>-claude"   # optional, defaults to $(hostname)-claude
 ```
 
-Ask the dashboard admin for the API key.
+Ask the dashboard admin for the API key. Set `DASHBOARD_USER` if you run on SLURM compute nodes (where hostname changes per job) to keep a consistent identity.
 
 **research-report** — Needs matplotlib in a project venv:
 

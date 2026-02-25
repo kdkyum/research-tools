@@ -29,6 +29,12 @@ Required variables:
 - `DASHBOARD_URL` — e.g. `https://89.168.72.192:3000`
 - `DASHBOARD_API_KEY` — API key for write access
 
+Optional:
+- `DASHBOARD_USER` — Fixed user/instance name (e.g. `gpu-cluster-claude`).
+  If not set, falls back to `$(hostname)-claude`. Useful when running on
+  SLURM compute nodes where hostname changes per job — set this to the
+  login node name so all reports from the same cluster appear under one user.
+
 If missing, tell the user to create `~/.dashboard.env` with both values.
 
 ## Arguments
@@ -120,7 +126,7 @@ curl -sk \
   -H "X-API-Key: ${DASHBOARD_API_KEY}" \
   -F "report=@research_notes/<report_file>" \
   -F "project=${PROJECT}" \
-  -F "user=$(hostname)-claude" \
+  -F "user=${DASHBOARD_USER:-$(hostname)-claude}" \
   -F "tags=${TAGS}" \
   -F "env=${ENV_JSON}" \
   -F "git=${GIT_JSON}" \
