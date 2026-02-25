@@ -23,9 +23,6 @@ skills/                           # Top-level skill definitions (editable source
   └── telegram-send/
       ├── SKILL.md
       └── scripts/send_markdown.py
-commands/
-  ├── send-telegram.md            # /send-telegram slash command
-  └── submit-report.md            # /submit-report slash command
 ```
 
 **Dual layout**: Skills exist in both `skills/` (top-level, editable) and `plugins/research-tools/skills/` (installed copy). The two may diverge — `plugins/` contains the version-controlled copy referenced by `marketplace.json`, while `skills/` is the working source. When editing skills, update both locations or consolidate.
