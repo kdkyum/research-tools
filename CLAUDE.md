@@ -14,18 +14,19 @@ A Claude Code marketplace plugin (`kdkyum-research-tools`) that provides four sk
 ## Repository Layout
 
 ```
-.claude-plugin/marketplace.json   # Plugin registry metadata
-plugins/research-tools/           # Installed plugin copy (skills + README)
-skills/                           # Top-level skill definitions (editable source)
-  ├── read-arxiv-paper/SKILL.md
-  ├── research-report/SKILL.md
-  ├── submit-report/SKILL.md
-  └── telegram-send/
-      ├── SKILL.md
-      └── scripts/send_markdown.py
+.claude-plugin/marketplace.json       # Plugin registry metadata
+plugins/research-tools/               # Plugin source (referenced by marketplace.json)
+  ├── README.md
+  └── skills/
+      ├── read-arxiv-paper/SKILL.md
+      ├── research-report/SKILL.md
+      ├── submit-report/SKILL.md
+      └── telegram-send/
+          ├── SKILL.md
+          └── scripts/send_markdown.py
 ```
 
-**Dual layout**: Skills exist in both `skills/` (top-level, editable) and `plugins/research-tools/skills/` (installed copy). The two may diverge — `plugins/` contains the version-controlled copy referenced by `marketplace.json`, while `skills/` is the working source. When editing skills, update both locations or consolidate.
+All skills live under `plugins/research-tools/skills/`. This is the single source of truth — `marketplace.json` points to `./plugins/research-tools`.
 
 ## Key Conventions
 

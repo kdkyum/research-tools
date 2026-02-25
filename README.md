@@ -2,11 +2,18 @@
 
 Claude Code plugin for research workflows: read arxiv papers, generate reports from experiment results, submit them to a centralized dashboard, and send them to Telegram.
 
-## Setup
+## Installation
 
-### 1. Telegram bot configuration
+In Claude Code, run:
 
-Create `~/.telegram_notify.conf` with your bot token and chat ID:
+```
+/plugin marketplace add kdkyum/research-tools
+/plugin install research-tools@kdkyum-research-tools
+```
+
+### Per-skill setup
+
+**telegram-send** — Create `~/.telegram_notify.conf`:
 
 ```
 T_TOKEN="<your-bot-token>"
@@ -20,30 +27,32 @@ To get these:
    curl -s "https://api.telegram.org/bot<TOKEN>/getUpdates" | python3 -m json.tool | grep '"id"'
    ```
 
-### 2. Python dependencies (per-project)
+**submit-report** — Create `~/.dashboard.env`:
 
-The `research-report` skill generates matplotlib figures and HTML reports.
-Each project needs a venv with the required packages:
+```
+DASHBOARD_URL="https://<your-dashboard-ip>:3000"
+DASHBOARD_API_KEY="<your-api-key>"
+```
+
+Ask the dashboard admin for the API key.
+
+**research-report** — Needs matplotlib in a project venv:
 
 ```bash
 uv venv .venv
 uv pip install -p .venv markdown matplotlib
 ```
 
-Run scripts with `.venv/bin/python`.
-The `telegram-send` script uses only stdlib — no extra dependencies needed.
-
-### 3. Project directory conventions
+## Project directory conventions
 
 The skills expect this layout (created automatically when used):
 
 ```
 <project>/
-├── research_notes/          # Self-contained report folder (backup this)
+├── research_notes/          # Self-contained report folder
 │   ├── *.md                 # Markdown reports (YYYY-MM-DD-HHMMSS_<title>.md)
 │   └── attachements/        # Figures, generated scripts (.png, .pdf, .py)
-└── scripts/
-    └── build_research_html.py   # Optional: converts research_notes/*.md to HTML
+└── knowledge/               # Arxiv paper summaries
 ```
 
 ## Skills
@@ -72,7 +81,7 @@ Submits a research report (and associated figures from `research_notes/attacheme
 - Versioned updates (`--update`) for re-submitting modified reports
 - Environment and git metadata collection
 
-Requires `DASHBOARD_URL` and `DASHBOARD_API_KEY` env vars (or `~/.dashboard.env`).
+Requires `DASHBOARD_URL` and `DASHBOARD_API_KEY` in `~/.dashboard.env`.
 
 ### telegram-send
 
@@ -81,4 +90,3 @@ Auto-triggers on: "send to Telegram", "notify me", "share on Telegram".
 Sends files to your Telegram chat. Two modes:
 - **Formatted text** (default): converts markdown to Telegram HTML, splits at 4096-char limit
 - **Document** (`--as-document`): sends the raw file as an attachment
-
