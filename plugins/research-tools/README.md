@@ -11,6 +11,12 @@ In Claude Code, run:
 /plugin install research-tools@kdkyum-research-tools
 ```
 
+### Updating
+
+```
+/plugin marketplace update kdkyum-research-tools
+```
+
 ### Per-skill setup
 
 **telegram-send** — Create `~/.telegram_notify.conf`:
