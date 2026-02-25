@@ -1,6 +1,6 @@
 # Research Tools
 
-Claude Code plugin for research workflows: read arxiv papers, generate reports from experiment results, and send them to Telegram.
+Claude Code plugin for research workflows: read arxiv papers, generate reports from experiment results, submit them to a centralized dashboard, and send them to Telegram.
 
 ## Setup
 
@@ -39,8 +39,9 @@ The skills expect this layout (created automatically when used):
 
 ```
 <project>/
-├── research_notes/          # Markdown reports (YYYY-MM-DD-HHMMSS_<title>.md)
-├── attachements/            # Figures, generated scripts (.png, .pdf, .py)
+├── research_notes/          # Self-contained report folder (backup this)
+│   ├── *.md                 # Markdown reports (YYYY-MM-DD-HHMMSS_<title>.md)
+│   └── attachements/        # Figures, generated scripts (.png, .pdf, .py)
 └── scripts/
     └── build_research_html.py   # Optional: converts research_notes/*.md to HTML
 ```
@@ -51,7 +52,7 @@ The skills expect this layout (created automatically when used):
 
 Auto-triggers on: "write a report", "summarize results", "document the experiment", "create research notes", "analyze these results".
 
-Generates a structured markdown report from any experiment artifacts (JSON, CSV, Jupyter notebooks, figures, logs). Reports are saved to `research_notes/YYYY-MM-DD-HHMMSS_<title>.md` with figures in `attachements/`.
+Generates a structured markdown report from any experiment artifacts (JSON, CSV, Jupyter notebooks, figures, logs). Reports are saved to `research_notes/YYYY-MM-DD-HHMMSS_<title>.md` with figures in `research_notes/attachements/`.
 
 ### read-arxiv-paper
 
@@ -61,8 +62,44 @@ Downloads the TeX source of an arxiv paper, reads it fully, and produces a proje
 
 Paper sources are cached at `~/.cache/arxiv-papers/knowledge/{arxiv_id}/` so re-reading is instant.
 
+### submit-report
+
+Auto-triggers on: "submit report", "upload to dashboard", "push this report", "resubmit", "sync report to dashboard".
+
+Submits a research report (and associated figures from `research_notes/attachements/`) to the centralized Research Dashboard. Supports:
+- Auto-detection of the latest report in `research_notes/`
+- Automatic inference of project name and tags from report content
+- Versioned updates (`--update`) for re-submitting modified reports
+- Environment and git metadata collection
+
+Requires `DASHBOARD_URL` and `DASHBOARD_API_KEY` env vars (or `~/.dashboard.env`).
+
 ### telegram-send
 
 Auto-triggers on: "send to Telegram", "notify me", "share on Telegram".
 
-Sends files as document attachments to your Telegram chat. Always send the HTML version of reports for best rendering. Uses only Python stdlib — no extra dependencies.
+Sends files to your Telegram chat. Two modes:
+- **Formatted text** (default): converts markdown to Telegram HTML, splits at 4096-char limit
+- **Document** (`--as-document`): sends the raw file as an attachment
+
+## Commands
+
+### /submit-report
+
+```
+/submit-report                                    # Submit latest report
+/submit-report research_notes/my_report.md        # Submit specific file
+/submit-report --update                            # Update existing report
+/submit-report --project my-project --tags a,b,c   # With explicit metadata
+```
+
+Submits to the Research Dashboard. If no file specified, auto-detects the latest report.
+
+### /send-telegram
+
+```
+/send-telegram <file_path>              # Send as formatted text
+/send-telegram <file_path> --as-document  # Send as file attachment
+```
+
+If no file is specified, offers to send the most recent file in `research_notes/`.

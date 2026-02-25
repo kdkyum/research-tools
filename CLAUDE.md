@@ -4,10 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-A Claude Code marketplace plugin (`kdkyum-research-tools`) that provides three skills for research workflows:
+A Claude Code marketplace plugin (`kdkyum-research-tools`) that provides four skills for research workflows:
 
 - **read-arxiv-paper** — Downloads arxiv TeX source, reads the full paper, outputs a project-contextualized summary to `./knowledge/summary_{tag}.md`
 - **research-report** — Generates structured markdown reports from experiment artifacts (notebooks, JSON, CSV, figures) into `research_notes/`
+- **submit-report** — Submits reports from `research_notes/` to the centralized Research Dashboard via `submit-report.sh`, with auto-detection of figures and support for versioned updates
 - **telegram-send** — Sends files to Telegram via Bot API using only Python stdlib
 
 ## Repository Layout
@@ -18,10 +19,13 @@ plugins/research-tools/           # Installed plugin copy (skills + README)
 skills/                           # Top-level skill definitions (editable source)
   ├── read-arxiv-paper/SKILL.md
   ├── research-report/SKILL.md
+  ├── submit-report/SKILL.md
   └── telegram-send/
       ├── SKILL.md
       └── scripts/send_markdown.py
-commands/send-telegram.md         # /send-telegram slash command definition
+commands/
+  ├── send-telegram.md            # /send-telegram slash command
+  └── submit-report.md            # /submit-report slash command
 ```
 
 **Dual layout**: Skills exist in both `skills/` (top-level, editable) and `plugins/research-tools/skills/` (installed copy). The two may diverge — `plugins/` contains the version-controlled copy referenced by `marketplace.json`, while `skills/` is the working source. When editing skills, update both locations or consolidate.
@@ -33,6 +37,7 @@ commands/send-telegram.md         # /send-telegram slash command definition
 - **Telegram config**: Bot credentials at `~/.telegram_notify.conf` with `T_TOKEN` and `CHAT_ID`.
 - **Arxiv cache**: Paper sources cached at `~/.cache/arxiv-papers/knowledge/{arxiv_id}/`.
 - **Report output paths**: Reports go to `research_notes/YYYY-MM-DD-HHMMSS_<title>.md`, figures to `research_notes/attachements/` (note: intentional spelling). Everything lives inside `research_notes/` for self-contained backup and dashboard submission.
+- **Dashboard config**: The submit-report skill reads `DASHBOARD_URL` and `DASHBOARD_API_KEY` from env vars or `~/.dashboard.env`. The submit script is at `/home/ubuntu/Projects/report_dashboard/scripts/submit-report.sh`.
 
 ## Spelling Note
 

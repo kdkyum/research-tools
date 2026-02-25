@@ -9,8 +9,8 @@
   "plugins": [
     {
       "name": "research-tools",
-      "description": "Read arxiv papers, generate structured research reports from experiment results, and send files to Telegram",
-      "version": "1.0.0",
+      "description": "Read arxiv papers, generate structured research reports, submit to a centralized dashboard, and send files to Telegram",
+      "version": "1.1.0",
       "author": {
         "name": "Dong-Kyum Kim",
         "email": "kdkyum531@gmail.com"

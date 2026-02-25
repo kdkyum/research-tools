@@ -1,6 +1,6 @@
 # Research Tools
 
-Claude Code plugin for research workflows: read arxiv papers, generate reports from experiment results, and send them to Telegram.
+Claude Code plugin for research workflows: read arxiv papers, generate reports from experiment results, submit them to a centralized dashboard, and send them to Telegram.
 
 ## Setup
 
@@ -62,6 +62,18 @@ Downloads the TeX source of an arxiv paper, reads it fully, and produces a proje
 
 Paper sources are cached at `~/.cache/arxiv-papers/knowledge/{arxiv_id}/` so re-reading is instant.
 
+### submit-report
+
+Auto-triggers on: "submit report", "upload to dashboard", "push this report", "resubmit", "sync report to dashboard".
+
+Submits a research report (and associated figures from `research_notes/attachements/`) to the centralized Research Dashboard. Supports:
+- Auto-detection of the latest report in `research_notes/`
+- Automatic inference of project name and tags from report content
+- Versioned updates (`--update`) for re-submitting modified reports
+- Environment and git metadata collection
+
+Requires `DASHBOARD_URL` and `DASHBOARD_API_KEY` env vars (or `~/.dashboard.env`).
+
 ### telegram-send
 
 Auto-triggers on: "send to Telegram", "notify me", "share on Telegram".
@@ -71,6 +83,17 @@ Sends files to your Telegram chat. Two modes:
 - **Document** (`--as-document`): sends the raw file as an attachment
 
 ## Commands
+
+### /submit-report
+
+```
+/submit-report                                    # Submit latest report
+/submit-report research_notes/my_report.md        # Submit specific file
+/submit-report --update                            # Update existing report
+/submit-report --project my-project --tags a,b,c   # With explicit metadata
+```
+
+Submits to the Research Dashboard. If no file specified, auto-detects the latest report.
 
 ### /send-telegram
 
