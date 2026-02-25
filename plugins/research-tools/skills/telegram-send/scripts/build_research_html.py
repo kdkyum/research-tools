@@ -30,12 +30,14 @@ def embed_images(html: str, base_dir: str) -> str:
         src = m.group(2)
         attrs_after = m.group(3)
 
-        # Resolve relative path
+        # Resolve relative path — figures live in research_notes/attachements/
         if src.startswith("../"):
+            # Legacy path: ../attachements/foo.png (from when attachements was outside)
             img_path = os.path.normpath(os.path.join(base_dir, src))
         elif src.startswith("/"):
             img_path = src
         else:
+            # Current path: attachements/foo.png (relative to research_notes/)
             img_path = os.path.normpath(os.path.join(base_dir, src))
 
         if not os.path.exists(img_path):

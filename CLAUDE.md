@@ -32,7 +32,7 @@ commands/send-telegram.md         # /send-telegram slash command definition
 - **No external Python deps for telegram-send**: `send_markdown.py` uses only stdlib (`urllib`, `json`). The research-report skill requires `matplotlib` and `markdown` in a project venv.
 - **Telegram config**: Bot credentials at `~/.telegram_notify.conf` with `T_TOKEN` and `CHAT_ID`.
 - **Arxiv cache**: Paper sources cached at `~/.cache/arxiv-papers/knowledge/{arxiv_id}/`.
-- **Report output paths**: Reports go to `research_notes/YYYY-MM-DD-HHMMSS_<title>.md`, figures to `attachements/` (note: intentional spelling).
+- **Report output paths**: Reports go to `research_notes/YYYY-MM-DD-HHMMSS_<title>.md`, figures to `research_notes/attachements/` (note: intentional spelling). Everything lives inside `research_notes/` for self-contained backup and dashboard submission.
 
 ## Spelling Note
 

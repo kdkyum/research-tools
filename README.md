@@ -39,8 +39,9 @@ The skills expect this layout (created automatically when used):
 
 ```
 <project>/
-├── research_notes/          # Markdown reports (YYYY-MM-DD-HHMMSS_<title>.md)
-├── attachements/            # Figures, generated scripts (.png, .pdf, .py)
+├── research_notes/          # Self-contained report folder (backup this)
+│   ├── *.md                 # Markdown reports (YYYY-MM-DD-HHMMSS_<title>.md)
+│   └── attachements/        # Figures, generated scripts (.png, .pdf, .py)
 └── scripts/
     └── build_research_html.py   # Optional: converts research_notes/*.md to HTML
 ```
@@ -51,7 +52,7 @@ The skills expect this layout (created automatically when used):
 
 Auto-triggers on: "write a report", "summarize results", "document the experiment", "create research notes", "analyze these results".
 
-Generates a structured markdown report from any experiment artifacts (JSON, CSV, Jupyter notebooks, figures, logs). Reports are saved to `research_notes/YYYY-MM-DD-HHMMSS_<title>.md` with figures in `attachements/`.
+Generates a structured markdown report from any experiment artifacts (JSON, CSV, Jupyter notebooks, figures, logs). Reports are saved to `research_notes/YYYY-MM-DD-HHMMSS_<title>.md` with figures in `research_notes/attachements/`.
 
 ### read-arxiv-paper
 

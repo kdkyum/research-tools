@@ -17,7 +17,8 @@ description: >
 
 Generate a structured markdown research report from completed experiment
 results. Reports go in `research_notes/`, figures and generated files go
-in `attachements/`.
+in `research_notes/attachements/`. This keeps everything self-contained in
+one folder for easy backup and submission to the dashboard.
 
 ## Arguments
 
@@ -39,7 +40,7 @@ the user will specify the path directly — adapt accordingly.
 - Read all cells — markdown cells provide motivation and method context,
   code cells show what was run, output cells contain metrics and figures
 - Identify the notebook's H1 heading for the report title
-- Catalog all figures already saved to `attachements/$0_*`
+- Catalog all figures already saved to `research_notes/attachements/$0_*`
 - Extract any printed metric tables from cell outputs
 
 **For other result formats**:
@@ -64,7 +65,7 @@ structure make it clear, infer automatically.
 
 ### 3. Generate figures
 
-If the notebook already produced figures saved to `attachements/$0_*`,
+If the notebook already produced figures saved to `research_notes/attachements/$0_*`,
 use those directly — don't regenerate unless the user asks.
 
 When new figures are needed, create matplotlib visualizations:
@@ -82,9 +83,9 @@ Figure conventions:
 - Consistent colors across related figures
 - Figure size typically 8x5 or 10x6 inches
 - Save as PNG (markdown preview) and PDF (publication quality)
-- Naming: `attachements/$0_NN_description.png` where `NN` is a
-  zero-padded sequence number
-- Write a reproducible script at `attachements/generate_figures_$0.py`
+- Naming: `research_notes/attachements/$0_NN_description.png` where `NN`
+  is a zero-padded sequence number
+- Write a reproducible script at `research_notes/attachements/generate_figures_$0.py`
   when generating new figures
 
 ### 4. Write the report
@@ -99,7 +100,7 @@ where `YYYY-MM-DD-HHMMSS` is the current timestamp (use
 H1 heading (lowercased, spaces to underscores, strip special characters).
 If the user provided `$1`, use that as the title instead.
 
-Ensure `research_notes/` exists (create if needed).
+Ensure `research_notes/` and `research_notes/attachements/` exist (create if needed).
 
 ### Report template
 
@@ -131,7 +132,7 @@ unless complexity warrants more.>
 |--------|----------|----------|-----|
 | ...    | ...      | ...      | ... |
 
-![Figure description](../attachements/$0_NN_description.png)
+![Figure description](attachements/$0_NN_description.png)
 
 <Interpretation of the result.>
 
@@ -157,14 +158,14 @@ or refuted and what it means for the broader research question.>
 
 - **Be concise**: each section should be 2-5 sentences unless the results
   warrant more detail
-- **Include all figures**: every figure in `attachements/$0_*` should
-  appear in the report with a descriptive caption
+- **Include all figures**: every figure in `research_notes/attachements/$0_*`
+  should appear in the report with a descriptive caption
 - **Reproduce key tables**: printed metric tables from cell outputs
   become markdown tables in the report
 - **Note methodological changes**: if cells were modified during the
   session, mention what was fixed and why
-- **Relative figure paths**: use `../attachements/` for figure links
-  since the report lives in `research_notes/`
+- **Relative figure paths**: use `attachements/` for figure links
+  since both the report and the attachements folder live in `research_notes/`
 - **No speculation**: only report what the data shows; flag ambiguous
   results as such
 - **Bold best values** in comparison tables for quick scanning
