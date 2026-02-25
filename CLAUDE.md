@@ -8,7 +8,7 @@ A Claude Code marketplace plugin (`kdkyum-research-tools`) that provides four sk
 
 - **read-arxiv-paper** — Downloads arxiv TeX source, reads the full paper, outputs a project-contextualized summary to `./knowledge/summary_{tag}.md`
 - **research-report** — Generates structured markdown reports from experiment artifacts (notebooks, JSON, CSV, figures) into `research_notes/`
-- **submit-report** — Submits reports from `research_notes/` to the centralized Research Dashboard via `submit-report.sh`, with auto-detection of figures and support for versioned updates
+- **submit-report** — Submits reports from `research_notes/` to the centralized Research Dashboard via curl API, with auto-detection of figures and support for versioned updates
 - **telegram-send** — Sends files to Telegram via Bot API using only Python stdlib
 
 ## Repository Layout
@@ -37,7 +37,7 @@ commands/
 - **Telegram config**: Bot credentials at `~/.telegram_notify.conf` with `T_TOKEN` and `CHAT_ID`.
 - **Arxiv cache**: Paper sources cached at `~/.cache/arxiv-papers/knowledge/{arxiv_id}/`.
 - **Report output paths**: Reports go to `research_notes/YYYY-MM-DD-HHMMSS_<title>.md`, figures to `research_notes/attachements/` (note: intentional spelling). Everything lives inside `research_notes/` for self-contained backup and dashboard submission.
-- **Dashboard config**: The submit-report skill reads `DASHBOARD_URL` and `DASHBOARD_API_KEY` from env vars or `~/.dashboard.env`. The submit script is at `/home/ubuntu/Projects/report_dashboard/scripts/submit-report.sh`.
+- **Dashboard config**: The submit-report skill reads `DASHBOARD_URL` and `DASHBOARD_API_KEY` from env vars or `~/.dashboard.env`. No external scripts needed — the skill calls the dashboard REST API directly via curl.
 
 ## Spelling Note
 

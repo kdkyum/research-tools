@@ -14,18 +14,8 @@ Steps:
 2. If no file specified, find the latest report in `research_notes/`
 3. Source `~/.dashboard.env` if it exists for DASHBOARD_URL and DASHBOARD_API_KEY
 4. Infer project name and tags from report content if not provided
-5. Run the submit script:
-
-```bash
-/home/ubuntu/Projects/report_dashboard/scripts/submit-report.sh \
-  <report_file> \
-  --server "${DASHBOARD_URL}" \
-  --api-key "${DASHBOARD_API_KEY}" \
-  --project "<project>" \
-  --tags "<tags>" \
-  [--update]
-```
-
-6. Report the result — success URL or error with guidance
+5. Collect figures from `research_notes/attachements/`
+6. Submit via curl multipart POST to `${DASHBOARD_URL}/api/reports`
+7. Report the result — success URL or error with guidance
 
 If `$ARGUMENTS` is empty, auto-detect the latest report and confirm with the user before submitting.

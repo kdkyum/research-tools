@@ -14,150 +14,157 @@ description: >
 # Submit Report to Research Dashboard
 
 Submit a markdown research report (and its figures) to the centralized
-Research Dashboard. The dashboard collects reports from multiple servers
-and provides a searchable, browsable web UI.
+Research Dashboard via its REST API. No external scripts needed — just
+curl. Works from any server.
 
-## Prerequisites
+## Credentials
 
-The submit script lives at a known location on the dashboard server.
-Set these environment variables (or pass as flags):
+Read from environment or `~/.dashboard.env`:
 
-- `DASHBOARD_URL` — The dashboard server URL (e.g. `https://89.168.72.192:3000`)
+```bash
+if [ -f ~/.dashboard.env ]; then source ~/.dashboard.env; fi
+```
+
+Required variables:
+- `DASHBOARD_URL` — e.g. `https://89.168.72.192:3000`
 - `DASHBOARD_API_KEY` — API key for write access
 
-If the env vars aren't set, check `~/.dashboard.env` or ask the user.
-
-The submit script is at: `/home/ubuntu/Projects/report_dashboard/scripts/submit-report.sh`
+If missing, tell the user to create `~/.dashboard.env` with both values.
 
 ## Arguments
 
-- `$ARGUMENTS` may contain:
-  - A specific report file path
-  - `--update` flag to update an existing report
-  - `--project NAME` to set the project
-  - `--tags tag1,tag2` to set tags
-  - Any other flags supported by submit-report.sh
+`$ARGUMENTS` may contain:
+- A report file path
+- `--update` to update an existing report (versioned)
+- `--project NAME` to set the project name
+- `--tags tag1,tag2` to set tags
 
 ## Workflow
 
-### 1. Identify the report to submit
+### 1. Find the report
 
-If `$ARGUMENTS` contains a file path, use that. Otherwise, find the most
-recent `.md` file in `research_notes/`:
+If a file path is in `$ARGUMENTS`, use it. Otherwise find the latest:
 
 ```bash
 ls -t research_notes/*.md | head -1
 ```
 
-Read the report to understand its content — you'll need the title, project
-context, and what it's about to fill in metadata.
+Read the report to extract its title (first `# ` heading or `title:` in
+frontmatter) and understand the content for tag inference.
 
-### 2. Determine project name and tags
+### 2. Infer project and tags
 
-Try to infer these automatically:
+- **Project**: Use git repo name (`basename $(git remote get-url origin .git)`)
+  or the current directory name. Use explicit `--project` if provided.
+- **Tags**: Pick 2-5 from the report content — model names, techniques
+  (ablation, finetuning, scaling), dataset names. Use explicit `--tags`
+  if provided.
 
-- **Project**: Check if there's a pattern in the directory name, git remote
-  URL, or report content. Common patterns: the git repo name, or the parent
-  directory name. If uncertain, ask the user.
-- **Tags**: Extract from the report content — look for keywords like model
-  names, techniques (ablation, finetuning, scaling), dataset names, or
-  key metrics. Pick 2-5 relevant tags.
+### 3. Collect attachments
 
-If the user provided `--project` or `--tags` in `$ARGUMENTS`, use those
-instead of inferring.
-
-### 3. Check for update mode
-
-If `--update` is in `$ARGUMENTS`, or if the user says "resubmit" or
-"update the report", add the `--update` flag. This tells the dashboard
-to find the existing report by title+project and create a new version
-rather than a duplicate.
-
-### 4. Submit via the script
-
-Run the submit script with all collected parameters:
+Find figures in `research_notes/attachements/` that belong to this report.
+If the report references a notebook (e.g. `notebooks/foo.ipynb`), only
+include files matching `foo_*`. Otherwise include all image files:
 
 ```bash
-/home/ubuntu/Projects/report_dashboard/scripts/submit-report.sh \
-  <report_file> \
-  --server "${DASHBOARD_URL}" \
-  --api-key "${DASHBOARD_API_KEY}" \
-  --project "<project_name>" \
-  --tags "<tag1,tag2,tag3>" \
-  --user "$(hostname)-claude" \
-  [--update]
+# All images in attachements/
+ls research_notes/attachements/*.{png,jpg,svg,pdf} 2>/dev/null
 ```
 
-The script automatically:
-- Collects environment info (hostname, Python version, GPU, CUDA)
-- Collects git info (branch, commit, remote, dirty status)
-- Auto-detects attachments from `research_notes/attachements/` that
-  match the report's notebook prefix
-- Uploads everything as a multipart POST to the dashboard API
-- Handles deduplication (returns 409 if duplicate, use `--force` to override)
-- In update mode, finds existing report by title and creates a new version
+### 4. Update mode — find existing report ID
 
-### 5. Report the result
-
-After submission, tell the user:
-- Whether the submission succeeded or failed
-- The report ID and dashboard URL for viewing
-- If it was an update, mention the version number
-- If it was a duplicate, suggest using `--update` or `--force`
-
-## Environment variable loading
-
-Before running the script, source credentials if they exist:
+If `--update` is requested (or the user says "resubmit"/"update"), look up
+the existing report by title:
 
 ```bash
-# Check for dashboard env file
-if [ -f ~/.dashboard.env ]; then
-  source ~/.dashboard.env
+TITLE="<extracted title>"
+RESP=$(curl -sk "${DASHBOARD_URL}/api/reports?lookup=$(python3 -c \
+  "import urllib.parse; print(urllib.parse.quote('$TITLE'))")&project=${PROJECT}" \
+  -H "X-API-Key: ${DASHBOARD_API_KEY}")
+# Extract id from JSON response
+```
+
+If found, use `PUT /api/reports/:id` instead of `POST /api/reports`.
+
+### 5. Submit via curl
+
+Build a multipart request with all the data:
+
+```bash
+# Collect environment info
+HOSTNAME=$(hostname)
+PY_VER=$(python3 --version 2>&1 | awk '{print $2}' || echo "")
+GPU=$(nvidia-smi --query-gpu=name --format=csv,noheader 2>/dev/null | head -1 || echo "")
+ENV_JSON="{\"hostname\":\"${HOSTNAME}\",\"pythonVersion\":\"${PY_VER}\"}"
+# Add GPU if available
+if [ -n "$GPU" ]; then
+  CUDA_VER=$(nvidia-smi --query-gpu=driver_version --format=csv,noheader 2>/dev/null | head -1 || echo "")
+  ENV_JSON="{\"hostname\":\"${HOSTNAME}\",\"pythonVersion\":\"${PY_VER}\",\"gpu\":\"${GPU}\",\"cudaVersion\":\"${CUDA_VER}\"}"
 fi
+
+# Collect git info
+GIT_JSON="{}"
+if git rev-parse --is-inside-work-tree &>/dev/null; then
+  GIT_BRANCH=$(git branch --show-current 2>/dev/null || echo "")
+  GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "")
+  GIT_REMOTE=$(git remote get-url origin 2>/dev/null || echo "")
+  GIT_DIRTY=$(git diff --quiet 2>/dev/null && echo "false" || echo "true")
+  GIT_JSON="{\"branch\":\"${GIT_BRANCH}\",\"commit\":\"${GIT_COMMIT}\",\"remoteUrl\":\"${GIT_REMOTE}\",\"dirty\":${GIT_DIRTY}}"
+fi
+
+# Build curl command
+# For new report: POST /api/reports
+# For update:     PUT  /api/reports/<ID>
+curl -sk \
+  -X POST "${DASHBOARD_URL}/api/reports" \
+  -H "X-API-Key: ${DASHBOARD_API_KEY}" \
+  -F "report=@research_notes/<report_file>" \
+  -F "project=${PROJECT}" \
+  -F "user=$(hostname)-claude" \
+  -F "tags=${TAGS}" \
+  -F "env=${ENV_JSON}" \
+  -F "git=${GIT_JSON}" \
+  -F "force=false" \
+  -F "attachment=@research_notes/attachements/fig1.png" \
+  -F "attachment=@research_notes/attachements/fig2.png"
 ```
 
-If neither env vars nor the file exist, tell the user they need to set
-`DASHBOARD_URL` and `DASHBOARD_API_KEY`. Point them to the dashboard
-admin for API key provisioning.
+Use `-sk` because the dashboard uses a self-signed TLS certificate.
+Repeat `-F "attachment=@..."` for each figure file.
+
+### 6. Handle the response
+
+| HTTP Code | Meaning | Action |
+|-----------|---------|--------|
+| 201 | Created | Report success, show dashboard URL |
+| 200 | Updated (with `--update`) | Show version number and URL |
+| 409 | Duplicate | Suggest `--update` or `--force` |
+| 401 | Bad API key | Check `DASHBOARD_API_KEY` |
+| 413 | Too large | Reduce attachment size |
+
+On success, extract the report ID from the JSON response and show:
+```
+View at: ${DASHBOARD_URL}/#/report/<id>
+```
 
 ## Example flows
 
-**Simple submit after writing a report:**
+**Simple submit:**
 ```
-User: "submit this report to the dashboard"
-→ Find latest report in research_notes/
+User: "submit this to the dashboard"
+→ Find latest .md in research_notes/
 → Infer project from git repo name
-→ Extract tags from report content
-→ Run submit-report.sh
-→ Report success with dashboard URL
+→ Extract 3 tags from content
+→ Collect matching figures from attachements/
+→ POST to dashboard API
+→ "Submitted! View at https://89.168.72.192:3000/#/report/2025-..."
 ```
 
-**Update an existing report:**
+**Resubmit after edits:**
 ```
-User: "I updated the report, resubmit it"
-→ Find the report file
-→ Run submit-report.sh with --update
-→ Dashboard creates a new version
-→ Report version number and URL
+User: "I updated the report, resubmit"
+→ Find the report, extract title
+→ GET /api/reports?lookup=<title> to find existing ID
+→ PUT /api/reports/<id> with new content
+→ "Updated to v3! View at ..."
 ```
-
-**Explicit project and tags:**
-```
-User: "/submit-report research_notes/2025-01-15_ablation.md --project transformer-scaling --tags ablation,attention"
-→ Use the specified file, project, and tags directly
-→ Run submit-report.sh
-→ Report success
-```
-
-## Troubleshooting
-
-- **409 Conflict**: Report already exists. Use `--update` to version it,
-  or `--force` to submit as a new report anyway.
-- **Connection refused**: Check that the dashboard server is running and
-  the URL is correct. The server uses HTTPS with a self-signed cert,
-  so curl needs `-k` (the script already handles this).
-- **401 Unauthorized**: API key is wrong or missing. Check `DASHBOARD_API_KEY`.
-- **No attachments detected**: The script looks for files in
-  `research_notes/attachements/` matching the notebook prefix from the
-  report's frontmatter. If the report doesn't reference a notebook,
-  all images in the attachements folder are included.
