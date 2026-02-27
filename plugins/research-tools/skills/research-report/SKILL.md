@@ -176,3 +176,12 @@ or refuted and what it means for the broader research question.>
 - **Line breaks**: to force a line break within a paragraph, end the line
   with two trailing spaces. A bare newline without trailing spaces is
   treated as a soft wrap (no `<br>`) by standard markdown renderers
+
+## After writing the report
+
+Once the report is written, suggest submitting it to the Research Dashboard:
+> "Report saved. Want me to submit it to the dashboard? (`/submit-report`)"
+
+If the user already submitted a previous version of this report and wants
+to resubmit, use `--force` to skip the duplicate check (there is no
+update-in-place — each submission creates a new report entry).

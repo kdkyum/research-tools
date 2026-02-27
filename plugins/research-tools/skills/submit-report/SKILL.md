@@ -5,8 +5,8 @@ description: >
   the user wants to submit, upload, or push a report to the dashboard, or after
   generating a research report and the user says "submit it", "upload to
   dashboard", "push this report", "send to dashboard", or "submit report".
-  Also triggers on: "update the report on the dashboard", "resubmit",
-  "sync report to dashboard". Even if the user just says "submit" after
+  Also triggers on: "resubmit", "sync report to dashboard".
+  Even if the user just says "submit" after
   running /research-report, use this skill. Works with any markdown report
   in research_notes/ — auto-detects the latest one if no file is specified.
 ---
@@ -41,9 +41,9 @@ If missing, tell the user to create `~/.dashboard.env` with both values.
 
 `$ARGUMENTS` may contain:
 - A report file path
-- `--update` to update an existing report (versioned)
 - `--project NAME` to set the project name
 - `--tags tag1,tag2` to set tags
+- `--force` to skip duplicate check
 
 ## Workflow
 
@@ -77,22 +77,7 @@ include files matching `foo_*`. Otherwise include all image files:
 ls research_notes/attachements/*.{png,jpg,svg,pdf} 2>/dev/null
 ```
 
-### 4. Update mode — find existing report ID
-
-If `--update` is requested (or the user says "resubmit"/"update"), look up
-the existing report by title:
-
-```bash
-TITLE="<extracted title>"
-RESP=$(curl -sk "${DASHBOARD_URL}/api/reports?lookup=$(python3 -c \
-  "import urllib.parse; print(urllib.parse.quote('$TITLE'))")&project=${PROJECT}" \
-  -H "X-API-Key: ${DASHBOARD_API_KEY}")
-# Extract id from JSON response
-```
-
-If found, use `PUT /api/reports/:id` instead of `POST /api/reports`.
-
-### 5. Submit via curl
+### 4. Submit via curl
 
 Build a multipart request with all the data:
 
@@ -119,8 +104,6 @@ if git rev-parse --is-inside-work-tree &>/dev/null; then
 fi
 
 # Build curl command
-# For new report: POST /api/reports
-# For update:     PUT  /api/reports/<ID>
 curl -sk \
   -X POST "${DASHBOARD_URL}/api/reports" \
   -H "X-API-Key: ${DASHBOARD_API_KEY}" \
@@ -138,13 +121,12 @@ curl -sk \
 Use `-sk` because the dashboard uses a self-signed TLS certificate.
 Repeat `-F "attachment=@..."` for each figure file.
 
-### 6. Handle the response
+### 5. Handle the response
 
 | HTTP Code | Meaning | Action |
 |-----------|---------|--------|
 | 201 | Created | Report success, show dashboard URL |
-| 200 | Updated (with `--update`) | Show version number and URL |
-| 409 | Duplicate | Suggest `--update` or `--force` |
+| 409 | Duplicate | Suggest `--force` to override |
 | 401 | Bad API key | Check `DASHBOARD_API_KEY` |
 | 413 | Too large | Reduce attachment size |
 
@@ -169,8 +151,7 @@ User: "submit this to the dashboard"
 **Resubmit after edits:**
 ```
 User: "I updated the report, resubmit"
-→ Find the report, extract title
-→ GET /api/reports?lookup=<title> to find existing ID
-→ PUT /api/reports/<id> with new content
-→ "Updated to v3! View at ..."
+→ Find the report
+→ POST with --force to skip duplicate check
+→ "Submitted! View at ..."
 ```
