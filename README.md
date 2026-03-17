@@ -1,6 +1,6 @@
 # Research Tools
 
-Claude Code plugin for research workflows: read arxiv papers, generate reports from experiment results, submit them to a centralized dashboard, and send them to Telegram.
+Claude Code plugin for research workflows: read arxiv papers, generate reports from experiment results, and submit them to a centralized dashboard.
 
 ## Installation
 
@@ -19,26 +19,12 @@ In Claude Code, run:
 
 ### Per-skill setup
 
-**telegram-send** — Create `~/.telegram_notify.conf`:
-
-```
-T_TOKEN="<your-bot-token>"
-CHAT_ID="<your-chat-id>"
-```
-
-To get these:
-1. Message [@BotFather](https://t.me/BotFather) on Telegram, run `/newbot`, and copy the token.
-2. Message your bot, then fetch your chat ID:
-   ```bash
-   curl -s "https://api.telegram.org/bot<TOKEN>/getUpdates" | python3 -m json.tool | grep '"id"'
-   ```
-
 **submit-report** — Create `~/.dashboard.env`:
 
 ```
 DASHBOARD_URL="https://<your-dashboard-ip>:3000"
 DASHBOARD_API_KEY="<your-api-key>"
-DASHBOARD_USER="<your-cluster-name>-claude"   # optional, defaults to $(hostname)-claude
+DASHBOARD_USER="<your-cluster-name>"   # optional, defaults to $(hostname)
 ```
 
 Ask the dashboard admin for the API key. Set `DASHBOARD_USER` if you run on SLURM compute nodes (where hostname changes per job) to keep a consistent identity.
@@ -90,10 +76,3 @@ Submits a research report (and associated figures from `research_notes/attacheme
 
 Requires `DASHBOARD_URL` and `DASHBOARD_API_KEY` in `~/.dashboard.env`.
 
-### telegram-send
-
-Auto-triggers on: "send to Telegram", "notify me", "share on Telegram".
-
-Sends files to your Telegram chat. Two modes:
-- **Formatted text** (default): converts markdown to Telegram HTML, splits at 4096-char limit
-- **Document** (`--as-document`): sends the raw file as an attachment
