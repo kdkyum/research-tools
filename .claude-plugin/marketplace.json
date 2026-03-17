@@ -10,7 +10,7 @@
     {
       "name": "research-tools",
       "description": "Read arxiv papers, generate structured research reports, and submit to a centralized dashboard",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "author": {
         "name": "Dong-Kyum Kim",
         "email": "kdkyum531@gmail.com"

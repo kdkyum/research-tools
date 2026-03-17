@@ -85,7 +85,9 @@ Build a multipart request with all the data:
 # Collect environment info
 HOSTNAME=$(hostname)
 PY_VER=$(python3 --version 2>&1 | awk '{print $2}' || echo "")
-GPU=$(nvidia-smi --query-gpu=name --format=csv,noheader 2>/dev/null | head -1 || echo "")
+GPU=$(nvidia-smi --query-gpu=name --format=csv,noheader 2>/dev/null | head -1 || true)
+# Clear GPU if nvidia-smi printed an error instead of a device name
+[[ "$GPU" == *"has failed"* || "$GPU" == *"NVIDIA-SMI"* ]] && GPU=""
 ENV_JSON="{\"hostname\":\"${HOSTNAME}\",\"pythonVersion\":\"${PY_VER}\"}"
 # Add GPU if available
 if [ -n "$GPU" ]; then
