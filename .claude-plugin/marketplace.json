@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "kdkyum-research-tools",
-  "description": "Research workflow tools: read arxiv papers, generate experiment reports, send to Telegram",
+  "description": "Research workflow tools: read arxiv papers, generate experiment reports, submit to dashboard",
   "owner": {
     "name": "Dong-Kyum Kim",
     "email": "kdkyum531@gmail.com"
@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "research-tools",
-      "description": "Read arxiv papers, generate structured research reports, submit to a centralized dashboard, and send files to Telegram",
+      "description": "Read arxiv papers, generate structured research reports, and submit to a centralized dashboard",
       "version": "1.1.0",
       "author": {
         "name": "Dong-Kyum Kim",
