@@ -1,6 +1,6 @@
 # Research Tools
 
-Claude Code plugin for research workflows: read arxiv papers, generate reports from experiment results, and submit them to a centralized dashboard.
+Claude Code plugin for research workflows: read arxiv papers and generate reports from experiment results.
 
 ## Installation
 
@@ -18,16 +18,6 @@ In Claude Code, run:
 ```
 
 ### Per-skill setup
-
-**submit-report** — Create `~/.dashboard.env`:
-
-```
-DASHBOARD_URL="https://<your-dashboard-ip>:3000"
-DASHBOARD_API_KEY="<your-api-key>"
-DASHBOARD_USER="<your-cluster-name>"   # optional, defaults to $(hostname)
-```
-
-Ask the dashboard admin for the API key. Set `DASHBOARD_USER` if you run on SLURM compute nodes (where hostname changes per job) to keep a consistent identity.
 
 **research-report** — Needs matplotlib in a project venv:
 
@@ -63,16 +53,4 @@ Auto-triggers on: arxiv URLs, "read this paper", "summarize this arxiv paper".
 Downloads the TeX source of an arxiv paper, reads it fully, and produces a project-contextualized summary at `./knowledge/summary_{tag}.md`. The summary connects the paper's ideas to the current codebase — what techniques apply, what experiments to try, what code would change.
 
 Paper sources are cached at `~/.cache/arxiv-papers/knowledge/{arxiv_id}/` so re-reading is instant.
-
-### submit-report
-
-Auto-triggers on: "submit report", "upload to dashboard", "push this report", "resubmit", "sync report to dashboard".
-
-Submits a research report (and associated figures from `research_notes/attachements/`) to the centralized Research Dashboard. Supports:
-- Auto-detection of the latest report in `research_notes/`
-- Automatic inference of project name and tags from report content
-- Versioned updates (`--update`) for re-submitting modified reports
-- Environment and git metadata collection
-
-Requires `DASHBOARD_URL` and `DASHBOARD_API_KEY` in `~/.dashboard.env`.
 

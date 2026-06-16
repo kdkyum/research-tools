@@ -4,11 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-A Claude Code marketplace plugin (`kdkyum-research-tools`) that provides three skills for research workflows:
+A Claude Code marketplace plugin (`kdkyum-research-tools`) that provides two skills for research workflows:
 
 - **read-arxiv-paper** — Downloads arxiv TeX source, reads the full paper, outputs a project-contextualized summary to `./knowledge/summary_{tag}.md`
 - **research-report** — Generates structured markdown reports from experiment artifacts (notebooks, JSON, CSV, figures) into `research_notes/`
-- **submit-report** — Submits reports from `research_notes/` to the centralized Research Dashboard via curl API, with auto-detection of figures and support for versioned updates
 
 ## Repository Layout
 
@@ -18,8 +17,7 @@ plugins/research-tools/               # Plugin source (referenced by marketplace
   ├── README.md
   └── skills/
       ├── read-arxiv-paper/SKILL.md
-      ├── research-report/SKILL.md
-      └── submit-report/SKILL.md
+      └── research-report/SKILL.md
 ```
 
 All skills live under `plugins/research-tools/skills/`. This is the single source of truth — `marketplace.json` points to `./plugins/research-tools`.
@@ -29,8 +27,7 @@ All skills live under `plugins/research-tools/skills/`. This is the single sourc
 - **SKILL.md frontmatter**: Each skill has YAML frontmatter with `name` and `description` fields. The `description` controls auto-triggering — it lists natural language phrases that activate the skill.
 - **Research-report deps**: The research-report skill requires `matplotlib` and `markdown` in a project venv.
 - **Arxiv cache**: Paper sources cached at `~/.cache/arxiv-papers/knowledge/{arxiv_id}/`.
-- **Report output paths**: Reports go to `research_notes/YYYY-MM-DD-HHMMSS_<title>.md`, figures to `research_notes/attachements/` (note: intentional spelling). Everything lives inside `research_notes/` for self-contained backup and dashboard submission.
-- **Dashboard config**: The submit-report skill reads `DASHBOARD_URL` and `DASHBOARD_API_KEY` from env vars or `~/.dashboard.env`. No external scripts needed — the skill calls the dashboard REST API directly via curl.
+- **Report output paths**: Reports go to `research_notes/YYYY-MM-DD-HHMMSS_<title>.md`, figures to `research_notes/attachements/` (note: intentional spelling). Everything lives inside `research_notes/` for self-contained backup.
 
 ## Spelling Note
 
