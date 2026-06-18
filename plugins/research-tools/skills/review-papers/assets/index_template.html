@@ -1,0 +1,179 @@
+<!doctype html>
+<!-- =====================================================================
+  MAIN REVIEW TEMPLATE (index.html). This is a SKELETON — fill the prose,
+  repeat the marked blocks per category/paper, and delete what you don't use.
+  Replace {{SITE_TITLE}}, {{SITE_MARK}}, {{TOPIC}}, the hero, and all content.
+  Keep <head> + asset links exact. Build ONE shared identity (styles.css).
+====================================================================== -->
+<html lang="en">
+<!-- FLOATING NAV: app.js auto-builds a bottom-right "Contents" toggle from
+     [data-nav="1|2|3"] + [data-nav-title] markers (section / subsection / item).
+     Add them to your sections, category banners (1), sub-movements (2), and paper
+     blocks (2 or 3). Pages without any data-nav fall back to <section>+headings. -->
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{SITE_TITLE}}</title>
+<meta name="description" content="{{REVIEW_SUBTITLE}}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<!-- ===================== HERO ===================== -->
+<header class="hero band">
+  <div class="grid-bg" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="eyebrow">A review · {{TOPIC}} · {{YEAR_RANGE}}</p>
+    <h1>{{HEADLINE}}</h1>
+    <p class="sub">{{REVIEW_SUBTITLE}}</p>
+    <!-- SIGNATURE DEMO (optional): twin compare cards that *show* the core tension.
+         Inside .q use <span class="mask">[blank]</span> for a redacted token and
+         <span class="cue">word</span> to highlight the cue that flips meaning. -->
+    <div class="cmp-grid">
+      <div class="cmp">
+        <div class="q">{{CMP_A_PROMPT}} <span class="mask">[blank]</span></div>
+        <div class="bar-row"><span class="tok">{{TOK}}</span><span class="bar-track"><span class="bar-fill" data-w="90%"></span></span><span class="val">.90</span></div>
+      </div>
+      <div class="cmp cmp--alt">
+        <div class="q">{{CMP_B_PROMPT}} <span class="mask">[blank]</span></div>
+        <div class="bar-row"><span class="tok">{{TOK}}</span><span class="bar-track"><span class="bar-fill" data-w="88%"></span></span><span class="val">.88</span></div>
+      </div>
+    </div>
+    <p class="cmp-note">{{CMP_CAPTION}}</p>
+    <div class="meta-row"><span><b>{{N_PAPERS}}</b> papers</span><span><b>{{N_CATEGORIES}}</b> categories</span><span>{{YEAR_RANGE}}</span></div>
+  </div>
+</header>
+
+<main>
+  <!-- ===================== ABSTRACT / FRAMING ===================== -->
+  <section class="band" id="framing" data-nav="1" data-nav-title="The problem">
+    <div class="wrap col">
+      <div class="section-head"><div class="kicker"><span class="num">§0</span><span class="label">The problem</span></div></div>
+      <p class="lead">{{FRAMING_LEAD}}</p>
+      <p>{{FRAMING_BODY}}</p>
+      <!-- OPTIONAL key equation / definition -->
+      <div class="eq alt">$$ {{FRAMING_EQUATION}} $$<div class="eq-note">{{FRAMING_EQ_NOTE}}</div></div>
+      <!-- OPTIONAL data/truth table --><!-- <table class="data-table">...</table> -->
+    </div>
+  </section>
+
+  <!-- ===================== READER'S MAP ===================== -->
+  <section class="band band--alt" id="map" data-nav="1" data-nav-title="The reader's map">
+    <div class="wrap col-wide">
+      <div class="section-head"><div class="kicker"><span class="num">§</span><span class="label">The two (or N) regimes</span></div></div>
+      <div class="map">
+        <!-- one .map-col per category -->
+        <div class="map-col">
+          <h3><span class="tag tag--A">A</span> {{CATEGORY_A_NAME}}</h3>
+          <ul class="map-list">
+            <li><a href="#{{PAPER_ID}}">{{PAPER_TITLE}}</a><span class="src">{{AUTHORS}} · {{YEAR}}</span></li>
+            <!-- repeat per paper in category A -->
+          </ul>
+        </div>
+        <div class="map-col">
+          <h3><span class="tag tag--B">B</span> {{CATEGORY_B_NAME}}</h3>
+          <ul class="map-list">
+            <li><a href="#{{PAPER_ID}}">{{PAPER_TITLE}}</a><span class="src">{{AUTHORS}} · {{YEAR}}</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CATEGORY A ===================== -->
+  <section class="regime band" id="cat-A" data-nav="1" data-nav-title="{{CATEGORY_A_NAME}}">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="wrap col-wide">
+      <p class="eyebrow">Regime A</p>
+      <div class="regime-id">A</div>
+      <h2>{{CATEGORY_A_NAME}}</h2>
+      <p class="regime-desc">{{CATEGORY_A_DESC}}</p>
+      <div class="papers-in-regime">
+        <a class="pill" href="#{{PAPER_ID}}">{{AUTHORS_SHORT}} {{YEAR}}</a>
+        <!-- repeat -->
+      </div>
+    </div>
+  </section>
+  <section class="band">
+    <div class="wrap col">
+      <!-- PER-PAPER REVIEW BLOCK — repeat for each paper in category A -->
+      <article class="paper" id="{{PAPER_ID}}" data-nav="2" data-nav-title="{{AUTHORS_SHORT}} {{YEAR}}">
+        <div class="paper-meta"><span class="tag tag--A">{{CATEGORY_A_NAME}}</span><span class="tag tag--year">{{YEAR}}</span><span class="tag">{{SUBTHREAD}}</span></div>
+        <h3>{{PAPER_TITLE}}</h3>
+        <p class="byline">{{AUTHORS_FULL}} · <a href="https://arxiv.org/abs/{{PAPER_ID}}">arXiv:{{PAPER_ID}}</a></p>
+        <p class="tldr">{{PAPER_TLDR}}</p>
+        <figure class="wide reveal"><div class="fig-frame"><img src="assets/{{PAPER_ID}}/fig1.png" alt="{{FIG_ALT}}"></div>
+          <figcaption><span class="fnum">{{AUTHORS_SHORT}} {{YEAR}}.</span> {{FIG_CAPTION}}</figcaption></figure>
+        <p>{{PAPER_SYNTHESIS}}</p>
+        <!-- OPTIONAL key equation --><div class="eq">$$ {{PAPER_EQUATION}} $$<div class="eq-note">{{EQ_NOTE}}</div></div>
+        <a class="readmore" href="{{PAPER_ID}}.html">Read the full breakdown</a>
+      </article>
+      <!-- /repeat -->
+    </div>
+  </section>
+
+  <!-- ===================== CATEGORY B (copy the banner + paper block, swap A→B) ===================== -->
+
+  <!-- ===================== TIMELINE ===================== -->
+  <section class="band band--alt" id="timeline" data-nav="1" data-nav-title="Timeline">
+    <div class="wrap col">
+      <div class="section-head"><div class="kicker"><span class="num">§</span><span class="label">How the field moved</span></div></div>
+      <div class="timeline">
+        <div class="tl-row"><span class="tl-year">{{YEAR}}</span><span class="tl-body"><b>{{MILESTONE_TITLE}}</b> — {{MILESTONE_DESC}}<span class="tl-tag">{{CAT}}</span></span></div>
+        <!-- repeat per milestone, chronological -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SYNTHESIS / OPEN PROBLEMS ===================== -->
+  <section class="band" id="synthesis" data-nav="1" data-nav-title="Synthesis & open problems">
+    <div class="wrap col">
+      <div class="section-head"><div class="kicker"><span class="num">§</span><span class="label">Synthesis &amp; open problems</span></div></div>
+      <p>{{SYNTHESIS_BODY}}</p>
+      <div class="callout"><span class="label">Open question</span><p>{{OPEN_QUESTION}}</p></div>
+    </div>
+  </section>
+
+  <!-- ===================== RELATED WORK ===================== -->
+  <section class="band band--alt" id="related" data-nav="1" data-nav-title="Beyond this list">
+    <div class="wrap col">
+      <div class="section-head"><div class="kicker"><span class="num">§</span><span class="label">Beyond this list</span></div></div>
+      <ol class="refs">
+        <li><span class="r-title">{{REL_TITLE}}</span>. <span class="r-auth">{{REL_AUTHORS}} ({{REL_YEAR}})</span>.
+          <span class="r-links"><a href="{{REL_URL}}">link ↗</a> · {{REL_WHY}}</span></li>
+        <!-- repeat -->
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===================== REFERENCES ===================== -->
+  <section class="band" id="references" data-nav="1" data-nav-title="References">
+    <div class="wrap col">
+      <div class="section-head"><div class="kicker"><span class="num">§</span><span class="label">References</span></div></div>
+      <ol class="refs">
+        <li><span class="r-title">{{PAPER_TITLE}}</span>. <span class="r-auth">{{AUTHORS_FULL}} ({{YEAR}})</span>. {{VENUE}}.
+          <span class="r-links"><a href="https://arxiv.org/abs/{{PAPER_ID}}">arXiv:{{PAPER_ID}} ↗</a> · <a href="{{PAPER_ID}}.html">deep dive →</a></span></li>
+        <!-- repeat per paper -->
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap col-wide">
+    <div class="big">{{SITE_MARK}} {{SITE_TITLE}}</div>
+    <p>{{FOOTER_NOTE}}</p>
+    <div class="footer-grid"><span>{{N_PAPERS}} papers · {{YEAR_RANGE}}</span><span>Built with the read-arxiv-paper + review-papers skills.</span></div>
+  </div>
+</footer>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script defer src="assets/app.js"></script>
+</body>
+</html>

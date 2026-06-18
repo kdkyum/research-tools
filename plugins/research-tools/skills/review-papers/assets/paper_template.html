@@ -1,0 +1,126 @@
+<!doctype html>
+<!-- =====================================================================
+  PER-PAPER TEMPLATE. Fill every {{PLACEHOLDER}}; keep <head>, classes, and
+  asset links exact; delete OPTIONAL blocks you don't use.
+  - Math: $...$ inline, $$...$$ display (KaTeX).
+  - Figures: assets/{{ARXIV_ID}}/figN.png with a REAL <figcaption>.
+  - Category tag: tag--A / tag--B (extend for more categories).
+  - {{SITE_TITLE}} / {{SITE_MARK}} = the review's title + signature glyph (e.g. "¬").
+====================================================================== -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}} — {{SITE_TITLE}}</title>
+<meta name="description" content="{{TLDR}}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="band paper-hero">
+  <div class="wrap col-wide">
+    <nav class="breadcrumb">
+      <a href="index.html">{{SITE_MARK}} {{SITE_TITLE}}</a><span>/</span><span>{{SHORT_TITLE}}</span>
+    </nav>
+    <div class="paper-meta" style="margin-bottom:1.4em">
+      <span class="tag tag--{{CATEGORY_LETTER}}">{{CATEGORY_NAME}}</span>
+      <span class="tag tag--year">{{YEAR}}</span>
+      <span class="tag">{{VENUE_SHORT}}</span>
+    </div>
+    <h1>{{TITLE}}</h1>
+    <p class="authors">{{AUTHORS_FULL}}</p>
+    <p class="venue">{{VENUE_FULL}} · arXiv:{{ARXIV_ID}}</p>
+    <div class="actions">
+      <a class="btn btn--accent" href="https://arxiv.org/abs/{{ARXIV_ID}}" target="_blank" rel="noopener">arXiv abstract ↗</a>
+      <a class="btn" href="https://arxiv.org/pdf/{{ARXIV_ID}}" target="_blank" rel="noopener">PDF ↗</a>
+      <a class="btn" href="index.html">← Back to the review</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="band band--alt">
+    <div class="wrap col">
+      <div class="tldr-box"><span class="label">TL;DR</span><p>{{TLDR}}</p></div>
+      <!-- OPTIONAL stat strip (2–4 headline numbers). Delete if none. -->
+      <div class="stats reveal">
+        <div class="stat"><span class="n">{{STAT1_N}}</span><span class="k">{{STAT1_K}}</span></div>
+        <div class="stat"><span class="n">{{STAT2_N}}</span><span class="k">{{STAT2_K}}</span></div>
+        <div class="stat"><span class="n">{{STAT3_N}}</span><span class="k">{{STAT3_K}}</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap col">
+      <div class="section-head"><div class="kicker"><span class="num">01</span><span class="label">Contributions</span></div></div>
+      <ul class="contrib">
+        <li>{{CONTRIB_1}}</li>
+        <li>{{CONTRIB_2}}</li>
+        <li>{{CONTRIB_3}}</li>
+      </ul>
+      <figure class="wide reveal">
+        <div class="fig-frame"><img src="assets/{{ARXIV_ID}}/fig1.png" alt="{{FIG1_ALT}}"></div>
+        <figcaption><span class="fnum">Figure 1.</span> {{FIG1_CAPTION}}</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="band band--alt">
+    <div class="wrap col">
+      <div class="section-head"><div class="kicker"><span class="num">02</span><span class="label">Method</span></div></div>
+      <p>{{METHOD_PARA}}</p>
+      <!-- OPTIONAL equation (.eq.alt for an accent border) -->
+      <div class="eq alt">$$ {{EQUATION_LATEX}} $$<div class="eq-note">{{EQUATION_NOTE}}</div></div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap col">
+      <div class="section-head"><div class="kicker"><span class="num">03</span><span class="label">Results</span></div></div>
+      <p>{{RESULTS_PARA}}</p>
+      <!-- OPTIONAL second figure / results table -->
+      <figure class="wide reveal">
+        <div class="fig-frame"><img src="assets/{{ARXIV_ID}}/fig2.png" alt="{{FIG2_ALT}}"></div>
+        <figcaption><span class="fnum">Figure 2.</span> {{FIG2_CAPTION}}</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="band band--alt">
+    <div class="wrap col">
+      <div class="callout callout--key"><span class="label">Why it matters for {{TOPIC}}</span><p>{{TOPIC_RELEVANCE}}</p></div>
+      <div class="section-head" style="margin-top:2.4em"><div class="kicker"><span class="num">04</span><span class="label">Limitations &amp; open questions</span></div></div>
+      <p>{{LIMITATIONS}}</p>
+      <!-- OPTIONAL representative quote --><blockquote>{{QUOTE}}</blockquote>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap col">
+      <div class="section-head"><div class="kicker"><span class="num">05</span><span class="label">Cite</span></div></div>
+      <pre><code>{{BIBTEX}}</code></pre>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap col-wide">
+    <div class="big">{{SITE_MARK}} {{SITE_TITLE}}</div>
+    <p>This page is one entry in a survey of {{TOPIC}}.</p>
+    <div class="footer-grid">
+      <span><a href="index.html">← Full review</a></span>
+      <span><a href="https://arxiv.org/abs/{{ARXIV_ID}}" target="_blank" rel="noopener">arXiv:{{ARXIV_ID}} ↗</a></span>
+    </div>
+  </div>
+</footer>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script defer src="assets/app.js"></script>
+</body>
+</html>

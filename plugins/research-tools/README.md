@@ -1,6 +1,6 @@
 # Research Tools
 
-Claude Code plugin for research workflows: read arxiv papers and generate reports from experiment results.
+Claude Code plugin for research workflows: read arxiv papers, turn a reading list into a long-form literature-review website, and generate reports from experiment results.
 
 ## Installation
 
@@ -35,10 +35,18 @@ The skills expect this layout (created automatically when used):
 ├── research_notes/          # Self-contained report folder
 │   ├── *.md                 # Markdown reports (YYYY-MM-DD-HHMMSS_<title>.md)
 │   └── attachements/        # Figures, generated scripts (.png, .pdf, .py)
-└── knowledge/               # Arxiv paper summaries
+├── knowledge/               # Arxiv paper summaries (read-arxiv-paper)
+└── htmls/                   # Literature-review sites (review-papers), one folder per review:
+    └── <review-slug>/       #   index.html, {arxiv_id}.html pages, assets/ (css/js + figures)
 ```
 
 ## Skills
+
+### review-papers
+
+Auto-triggers on: a list of several arxiv URLs/IDs given together, "review these papers", "write a review/survey blog post about <topic>", "read all these papers and synthesize them", "make a literature review", "compare these papers".
+
+Reads a whole reading list — one subagent per paper, each using the read-arxiv-paper procedure (TeX source + real figures) — builds a standalone HTML deep-dive page per paper, and aggregates them into a single categorized long-form review at `<out>/index.html` (default `./htmls/<review-slug>/`, one self-contained folder per review). Output is pure static HTML: KaTeX equations, real extracted figures, citations + links, an optional related-work section, and one shared design system across every page. Bundles a starter design system (`assets/`) and an orchestration recipe (`reference/`) that you re-theme per topic.
 
 ### research-report
 
