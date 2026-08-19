@@ -1,6 +1,6 @@
 # Research Tools
 
-Claude Code plugin for research workflows: read arxiv papers and generate reports from experiment results.
+Claude Code plugin for research workflows and writing: read arxiv papers, generate reports from experiment results, and remove AI writing tells.
 
 ## Installation
 
@@ -39,6 +39,10 @@ The skills expect this layout (created automatically when used):
 ```
 
 ## Skills
+
+### unslop
+
+Always applies to writing tasks. It removes common AI patterns, preserves the intended meaning and tone, and rewrites text with a more specific human voice.
 
 ### research-report
 
