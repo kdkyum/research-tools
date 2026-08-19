@@ -4,11 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-A Claude Code marketplace plugin (`kdkyum-research-tools`) that provides four skills for research and writing:
+A Claude Code marketplace plugin (`kdkyum-research-tools`) that provides three skills for research and writing:
 
 - **read-arxiv-paper** — Downloads arxiv TeX source, reads the full paper, outputs a project-contextualized summary to `./knowledge/summary_{tag}.md`
 - **review-papers** — Reads a whole reading list (one subagent per paper, via the read-arxiv-paper procedure) and aggregates them into a categorized long-form literature-review website under `./htmls/<review-slug>/` (one self-contained folder per review: index.html + per-paper pages + shared design system). Ships starter `assets/` (css/js/templates) and a `reference/` orchestration recipe.
-- **research-report** — Generates structured markdown reports from experiment artifacts (notebooks, JSON, CSV, figures) into `research_notes/`
 - **unslop** — Removes common AI writing patterns and rewrites text with a more specific human voice
 
 ## Repository Layout
@@ -20,7 +19,6 @@ plugins/research-tools/               # Plugin source (referenced by marketplace
   └── skills/
       ├── read-arxiv-paper/SKILL.md
       ├── review-papers/               # SKILL.md + reference/ (orchestration, design-system) + assets/ (css/js/templates)
-      ├── research-report/SKILL.md
       └── unslop/SKILL.md
 ```
 
@@ -29,10 +27,4 @@ All skills live under `plugins/research-tools/skills/`. This is the single sourc
 ## Key Conventions
 
 - **SKILL.md frontmatter**: Each skill has YAML frontmatter with `name` and `description` fields. The `description` controls auto-triggering — it lists natural language phrases that activate the skill.
-- **Research-report deps**: The research-report skill requires `matplotlib` and `markdown` in a project venv.
 - **Arxiv cache**: Paper sources cached at `~/.cache/arxiv-papers/knowledge/{arxiv_id}/`.
-- **Report output paths**: Reports go to `research_notes/YYYY-MM-DD-HHMMSS_<title>.md`, figures to `research_notes/attachements/` (note: intentional spelling). Everything lives inside `research_notes/` for self-contained backup.
-
-## Spelling Note
-
-The directory `attachements/` is intentionally spelled with an extra 'e' throughout the codebase. Do not "fix" this to `attachments/` — it would break existing report links.

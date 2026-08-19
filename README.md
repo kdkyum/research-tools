@@ -1,6 +1,6 @@
 # Research Tools
 
-Claude Code plugin for research workflows and writing: read arxiv papers, generate reports from experiment results, and remove AI writing tells.
+Claude Code plugin for research and writing: read arxiv papers and remove AI writing tells.
 
 ## Installation
 
@@ -17,24 +17,12 @@ In Claude Code, run:
 /plugin marketplace update kdkyum-research-tools
 ```
 
-### Per-skill setup
-
-**research-report** — Needs matplotlib in a project venv:
-
-```bash
-uv venv .venv
-uv pip install -p .venv markdown matplotlib
-```
-
 ## Project directory conventions
 
 The skills expect this layout (created automatically when used):
 
 ```
 <project>/
-├── research_notes/          # Self-contained report folder
-│   ├── *.md                 # Markdown reports (YYYY-MM-DD-HHMMSS_<title>.md)
-│   └── attachements/        # Figures, generated scripts (.png, .pdf, .py)
 └── knowledge/               # Arxiv paper summaries
 ```
 
@@ -43,12 +31,6 @@ The skills expect this layout (created automatically when used):
 ### unslop
 
 Always applies to writing tasks. It removes common AI patterns, preserves the intended meaning and tone, and rewrites text with a more specific human voice.
-
-### research-report
-
-Auto-triggers on: "write a report", "summarize results", "document the experiment", "create research notes", "analyze these results".
-
-Generates a structured markdown report from any experiment artifacts (JSON, CSV, Jupyter notebooks, figures, logs). Reports are saved to `research_notes/YYYY-MM-DD-HHMMSS_<title>.md` with figures in `research_notes/attachements/`.
 
 ### read-arxiv-paper
 
