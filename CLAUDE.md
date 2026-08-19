@@ -1,30 +1,57 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This repository contains the `kdkyum-research-tools` Claude Code marketplace
+plugin.
 
-## What This Is
+## Skills
 
-A Claude Code marketplace plugin (`kdkyum-research-tools`) that provides three skills for research and writing:
+The plugin has six skills:
 
-- **read-arxiv-paper** — Downloads arxiv TeX source, reads the full paper, outputs a project-contextualized summary to `./knowledge/summary_{tag}.md`
-- **review-papers** — Reads a whole reading list (one subagent per paper, via the read-arxiv-paper procedure) and aggregates them into a categorized long-form literature-review website under `./htmls/<review-slug>/` (one self-contained folder per review: index.html + per-paper pages + shared design system). Ships starter `assets/` (css/js/templates) and a `reference/` orchestration recipe.
-- **unslop** — Removes common AI writing patterns and rewrites text with a more specific human voice
+- `bro` restates the last response in plain language.
+- `read-arxiv-paper` reads arxiv TeX source and writes a project-specific
+  summary under `./knowledge/`.
+- `recall` reconstructs recent work from Claude Code transcripts, repository
+  state, and linked GitHub history.
+- `review-papers` reads a paper list and builds a static literature review under
+  `./htmls/<review-slug>/`.
+- `technical-writing` applies document structure and sentence-level rules to
+  technical prose.
+- `unslop` removes common generated-writing patterns and adds specific human
+  voice.
 
-## Repository Layout
+## Repository layout
 
+```text
+.claude-plugin/marketplace.json       # Marketplace metadata and plugin version
+plugins/research-tools/
+├── README.md
+├── THIRD_PARTY_NOTICES.md
+└── skills/
+    ├── bro/SKILL.md
+    ├── read-arxiv-paper/SKILL.md
+    ├── recall/SKILL.md
+    ├── review-papers/
+    │   ├── SKILL.md
+    │   ├── assets/
+    │   └── reference/
+    ├── technical-writing/SKILL.md
+    └── unslop/SKILL.md
 ```
-.claude-plugin/marketplace.json       # Plugin registry metadata
-plugins/research-tools/               # Plugin source (referenced by marketplace.json)
-  ├── README.md
-  └── skills/
-      ├── read-arxiv-paper/SKILL.md
-      ├── review-papers/               # SKILL.md + reference/ (orchestration, design-system) + assets/ (css/js/templates)
-      └── unslop/SKILL.md
-```
 
-All skills live under `plugins/research-tools/skills/`. This is the single source of truth — `marketplace.json` points to `./plugins/research-tools`.
+All skills live under `plugins/research-tools/skills/`. The marketplace entry
+uses `./plugins/research-tools` as the plugin source.
 
-## Key Conventions
+## Conventions
 
-- **SKILL.md frontmatter**: Each skill has YAML frontmatter with `name` and `description` fields. The `description` controls auto-triggering — it lists natural language phrases that activate the skill.
-- **Arxiv cache**: Paper sources cached at `~/.cache/arxiv-papers/knowledge/{arxiv_id}/`.
+- Each `SKILL.md` starts with YAML frontmatter containing `name` and
+  `description`.
+- The description controls automatic skill selection. Skills with
+  `disable-model-invocation: true` require direct user invocation.
+- Cache arxiv source at `~/.cache/arxiv-papers/knowledge/<arxiv-id>/`.
+- Claude Code transcripts live under `~/.claude/projects/<project-slug>/`.
+  Match `sessions-index.json` entries by `projectPath` instead of guessing the
+  slug when possible.
+- Keep the MIT notice for the pstack-derived skills in
+  `plugins/research-tools/THIRD_PARTY_NOTICES.md`.
+- Update the plugin version in `.claude-plugin/marketplace.json` when publishing
+  skill changes.
